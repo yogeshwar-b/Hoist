@@ -14,8 +14,7 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
       Number(imgRef.current?.getBoundingClientRect().width) / colcount
     console.log('got dimensions', gridDimensionsRef.current)
     setIsGridReady(true)
-  })
-  // const color = "rgb(" + r() + "," + r() + "," + r() + ")";
+  }, [imageUrl])
 
   const rowcount = 10
   const colcount = 20
@@ -25,42 +24,39 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
     gridColumnWidth: number
   }>({ gridRowHeight: 0, gridColumnWidth: 0 })
   const [isGridReady, setIsGridReady] = useState<boolean>(false)
-  const divArr = []
-  for (let i = 0; i < rowcount; i++) {
-    let temp = []
-    for (let j = 0; j < colcount; j++) {
-      temp.push(
-        <div
-          className={`inline`}
-          style={{
-            backgroundColor: `rgb(${r()},${r()},${r()})`,
-            width: `${gridDimensionsRef.current.gridColumnWidth}px`,
-            height: `${gridDimensionsRef.current.gridRowHeight}px`
-          }}
-        >
-          <span className='mix-blend-difference ' style={{ color: 'white' }}>
-            {/* {` ${i}-${j} `} */}
-          </span>
-        </div>
-      )
-    }
-    divArr.push(temp)
-  }
   console.log(imageUrl)
   return (
     <div className='object-contain h-100 w-full relative'>
       {isGridReady ? (
         <div className='absolute top-0 left-0 opacity-70'>
-          {divArr.map((row, index) => {
-            return (
-              <div key={index} className='flex flex-row '>
-                {row}
-              </div>
-            )
-          })}
+          {Array.from({ length: rowcount }).map((_, i) => (
+            <div key={i} className='flex'>
+              {Array.from({ length: colcount })
+                .fill(0)
+                .map((_, j) => {
+                  return (
+                    <div
+                      className={`inline`}
+                      style={{
+                        backgroundColor: `rgb(${r()},${r()},${r()})`,
+                        width: `${gridDimensionsRef.current.gridColumnWidth}px`,
+                        height: `${gridDimensionsRef.current.gridRowHeight}px`
+                      }}
+                    >
+                      <span
+                        className='mix-blend-difference '
+                        style={{ color: 'white' }}
+                      >
+                        {` ${i}-${j} `}
+                      </span>
+                    </div>
+                  )
+                })}
+            </div>
+          ))}
         </div>
       ) : (
-        <></>
+        <>Grid Not Ready</>
       )}
       <img
         ref={imgRef}
