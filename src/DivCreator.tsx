@@ -2,38 +2,51 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function DivCreator({ imageUrl }: { imageUrl: string }) {
   const imgRef = useRef<HTMLImageElement>(null)
-
-  useEffect(() => {
-    console.log(imgRef.current?.getBoundingClientRect().height)
-    console.log(imgRef.current?.getBoundingClientRect().width)
-    gridDimensionsRef.current.gridRowHeight =
-      Number(imgRef.current?.getBoundingClientRect().height) / rowcount
-    gridDimensionsRef.current.gridColumnWidth =
-      Number(imgRef.current?.getBoundingClientRect().width) / colcount
-    console.log('got dimensions', gridDimensionsRef.current)
-    setIsGridReady(true)
-  }, [imageUrl])
-
-  const rowcount = 3
-  const colcount = 3
+  const [isGridReady, setIsGridReady] = useState<boolean>(false)
+  const rowcount = 10
+  const colcount = 10
 
   const gridDimensionsRef = useRef<{
     gridRowHeight: number
     gridColumnWidth: number
   }>({ gridRowHeight: 0, gridColumnWidth: 0 })
-  const [isGridReady, setIsGridReady] = useState<boolean>(false)
+
+  const handleImageLoad = () => {
+    if (imgRef.current) {
+      gridDimensionsRef.current.gridRowHeight =
+        Number(imgRef.current?.getBoundingClientRect().height) / rowcount
+      gridDimensionsRef.current.gridColumnWidth =
+        Number(imgRef.current?.getBoundingClientRect().width) / colcount
+      console.log('got dimensions', gridDimensionsRef.current)
+      setIsGridReady(true)
+    }
+  }
+
+  useEffect(() => {
+    if (imgRef.current) {
+      setIsGridReady(false)
+      imgRef.current.onload = handleImageLoad
+    }
+    return () => {
+      if (imgRef.current) {
+        imgRef.current.onload = null
+      }
+    }
+  }, [imageUrl])
+
   console.log(imageUrl)
   return (
     <div className='object-contain h-100 w-full relative'>
       {isGridReady ? (
-        <div className='absolute top-0 left-0 opacity-100 flex flex-col gap-1'>
+        <div className='absolute top-0 left-0 opacity-100 flex flex-col '>
           {Array.from({ length: rowcount }).map((_, i) => (
-            <div key={i} className='flex gap-1'>
+            <div key={i} className='flex'>
               {Array.from({ length: colcount })
                 .fill(0)
                 .map((_, j) => {
                   return (
                     <div
+                      key={j}
                       className={`inline`}
                       style={{
                         backgroundImage: `url(${imageUrl})`,
@@ -49,13 +62,13 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
                         height: `${gridDimensionsRef.current.gridRowHeight}px`
                       }}
                     >
-                      <span className='absolute' style={{ color: 'black' }}>
+                      {/* <span className='absolute' style={{ color: 'black' }}>
                         {` ${i}-${j} ${(
                           j * gridDimensionsRef.current.gridColumnWidth
                         ).toPrecision(4)}px ${(
                           i * gridDimensionsRef.current.gridRowHeight
                         ).toPrecision(4)}px `}
-                      </span>
+                      </span> */}
                     </div>
                   )
                 })}
@@ -67,7 +80,7 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
       )}
       <img
         ref={imgRef}
-        className='pointer-events-none h-100 shadow-lg object-contain opacity-0'
+        className='pointer-events-none h-100 shadow-lg opacity-0'
         src={imageUrl}
         alt='UploadedImage'
       />

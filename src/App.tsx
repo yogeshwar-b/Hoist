@@ -4,7 +4,9 @@ import defaultImage from './assets/img/1ef67fd545a13e424447d81fe0d7c14d.jpeg'
 
 function App() {
   const handleUploadClick = () => {
-    fileInputRef.current && fileInputRef.current.click()
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
   }
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [imageUrl, setImageUrl] = useState<string>(defaultImage)
