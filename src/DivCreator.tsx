@@ -47,7 +47,9 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
                   return (
                     <div
                       key={j}
-                      className={`inline`}
+                      className={`inline animate-float ${
+                        j % 2 && 'animation-delay-500'
+                      }  `}
                       style={{
                         backgroundImage: `url(${imageUrl})`,
                         backgroundSize: `${

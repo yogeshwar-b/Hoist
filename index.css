@@ -1,1 +1,36 @@
 @import 'tailwindcss';
+
+@theme {
+  --animate-float: float 4s ease-in-out infinite;
+  --animate-wiggle: wiggle 1s infinite;
+
+  @keyframes wiggle {
+    0% {
+      transform: rotate(-3deg);
+    }
+    100% {
+      transform: rotate(3deg);
+    }
+  }
+
+  @keyframes float {
+    /* use @keyframes */
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-50px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+}
+
+.animation-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+.animation-delay-500 {
+  animation-delay: 200ms;
+}
