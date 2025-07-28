@@ -2,9 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 export default function DivCreator({ imageUrl }: { imageUrl: string }) {
   const imgRef = useRef<HTMLImageElement>(null)
-  function r() {
-    return Math.floor(Math.random() * 256)
-  }
+
   useEffect(() => {
     console.log(imgRef.current?.getBoundingClientRect().height)
     console.log(imgRef.current?.getBoundingClientRect().width)
@@ -16,8 +14,8 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
     setIsGridReady(true)
   }, [imageUrl])
 
-  const rowcount = 10
-  const colcount = 20
+  const rowcount = 3
+  const colcount = 3
 
   const gridDimensionsRef = useRef<{
     gridRowHeight: number
@@ -28,9 +26,9 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
   return (
     <div className='object-contain h-100 w-full relative'>
       {isGridReady ? (
-        <div className='absolute top-0 left-0 opacity-70'>
+        <div className='absolute top-0 left-0 opacity-100 flex flex-col gap-1'>
           {Array.from({ length: rowcount }).map((_, i) => (
-            <div key={i} className='flex'>
+            <div key={i} className='flex gap-1'>
               {Array.from({ length: colcount })
                 .fill(0)
                 .map((_, j) => {
@@ -38,16 +36,25 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
                     <div
                       className={`inline`}
                       style={{
-                        backgroundColor: `rgb(${r()},${r()},${r()})`,
+                        backgroundImage: `url(${imageUrl})`,
+                        backgroundSize: `${
+                          gridDimensionsRef.current.gridColumnWidth * colcount
+                        }px ${
+                          gridDimensionsRef.current.gridRowHeight * rowcount
+                        }px`,
+                        backgroundPosition: `-${
+                          j * gridDimensionsRef.current.gridColumnWidth
+                        }px -${i * gridDimensionsRef.current.gridRowHeight}px `,
                         width: `${gridDimensionsRef.current.gridColumnWidth}px`,
                         height: `${gridDimensionsRef.current.gridRowHeight}px`
                       }}
                     >
-                      <span
-                        className='mix-blend-difference '
-                        style={{ color: 'white' }}
-                      >
-                        {` ${i}-${j} `}
+                      <span className='absolute' style={{ color: 'black' }}>
+                        {` ${i}-${j} ${(
+                          j * gridDimensionsRef.current.gridColumnWidth
+                        ).toPrecision(4)}px ${(
+                          i * gridDimensionsRef.current.gridRowHeight
+                        ).toPrecision(4)}px `}
                       </span>
                     </div>
                   )
@@ -60,7 +67,7 @@ export default function DivCreator({ imageUrl }: { imageUrl: string }) {
       )}
       <img
         ref={imgRef}
-        className='h-100 shadow-lg object-contain'
+        className='pointer-events-none h-100 shadow-lg object-contain opacity-0'
         src={imageUrl}
         alt='UploadedImage'
       />
