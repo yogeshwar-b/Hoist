@@ -1,4 +1,4 @@
-import DivCreator from './DivCreator'
+import GridCreator from './DivCreator'
 
 export default function FlagContainer({ imageUrl }: { imageUrl: string }) {
   return (
@@ -9,7 +9,7 @@ export default function FlagContainer({ imageUrl }: { imageUrl: string }) {
         </div>
       ) : (
         // <img className='h-100 shadow-lg' src={imageUrl} alt='UploadedImage' />
-        <DivCreator imageUrl={imageUrl} />
+        <GridCreator imageUrl={imageUrl} />
       )}
     </div>
   )
